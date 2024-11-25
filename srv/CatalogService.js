@@ -31,7 +31,7 @@ async function _recuperarSuperheroes(req) {
     let database = await client.db(sDbName);
     let superheroes = await database.collection("superHeroes"); //colección de la base de datos
 
-    let ilimit, ioffset, oFilter; 
+    let ilimit, ioffset, oFilter;
 
     ilimit = 9999;
     ioffset = 0;
@@ -58,17 +58,17 @@ async function _recuperarSuperheroes(req) {
         } else {
             ioffset = 0;
         }
-    } else { 
+    } else {
         ilimit = 9999;
         ioffset = 0;
     }
-    
+
     //Implementación del Filter
 
     // console.log("Filtro: "+oFilter);
-    if(req.query.SELECT.one){
-        let sId =  req.query.SELECT.from.ref[0].where[2].val;
-        console.log("sId: "+sId);
+    if (req.query.SELECT.one) {
+        let sId = req.query.SELECT.from.ref[0].where[2].val;
+        console.log("sId: " + sId);
         oFilter = {
             "_id": ObjectId.createFromHexString(sId)
         };
@@ -76,12 +76,12 @@ async function _recuperarSuperheroes(req) {
     }
 
     // let result = await superheroes.find(oFilter).limit(ilimit).skip(ioffset).toArray();
-    let result = await superheroes.find(oFilter).limit(ilimit+ioffset).toArray();
+    let result = await superheroes.find(oFilter).limit(ilimit + ioffset).toArray();
     // console.log("resultado: " + JSON.stringify(result));
     // console.log("resultado: " + result.length);
 
     //Mapping
-    for(let i = 0; i< result.length; i++){
+    for (let i = 0; i < result.length; i++) {
         // console.log(`result[${i}]._id = `+result[i]._id);
         // console.log(`result[${i}]._id = `+result[i]._id.toString());
         result[i].id = result[i]._id.toString();
@@ -107,16 +107,23 @@ async function _actualizarSuperheroe(req) {
     let oResult = await superheroes.updateOne({ _id: sId }, { $set: oSuperHeroe });
     // console.log("resultado: " + JSON.stringify(oResult));
 
-    if(oResult.modifiedCount > 0){
+    if (oResult.modifiedCount > 0) {
         return oSuperHeroe;
-    }else{
+    } else {
         return oResult;
     }
 
 }
 
 async function _borrarSuperheroe(req) {
-    
+    await client.connect();
+    let database = await client.db(sDbName);
+    let superheroes = await database.collection("superHeroes");
+
+    let oSuperHeroe = req.data; //objeto que viene en la petición
+    let sId = ObjectId.createFromHexString(oSuperHeroe.id);
+    let result = await superheroes.deleteOne({ _id: sId });
+    return result;
 }
 
 module.exports = cds.service.impl(function () {
