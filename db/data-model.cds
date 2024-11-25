@@ -5,7 +5,8 @@ using {
 
 namespace guzcg;
 
-entity superheroe : cuid, managed {
+entity superheroe : managed {
+    key id           : String;
     nombreSuperheroe : String(100);
     nombre           : String(100);
     franquicia       : String(20);
