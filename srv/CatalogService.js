@@ -7,7 +7,7 @@ dotenv.config();
 
 const sMongoUrl = process.env.MONGO_URL;
 const sDbName = process.env.DATABASE_NAME;
-const client = new MongoClient(sMongoUrl, { useUnifiedTopology: true });
+const client = new MongoClient(sMongoUrl);
 
 async function _CrearSuperheroe(req) {
     if (req.data.franquicia != "Marvel" && req.data.franquicia != "DC") {
@@ -93,11 +93,30 @@ async function _recuperarSuperheroes(req) {
 }
 
 async function _actualizarSuperheroe(req) {
-    return req.data;
+
+    await client.connect();
+    let database = await client.db(sDbName);
+    let superheroes = await database.collection("superHeroes");
+
+    let oSuperHeroe = req.data; //objeto que viene en la petición
+    // console.log("resultado" + JSON.stringify(oSuperHeroe));
+
+    let sId = ObjectId.createFromHexString(oSuperHeroe.id);
+    delete oSuperHeroe.id; //borramos el id del objeto
+
+    let oResult = await superheroes.updateOne({ _id: sId }, { $set: oSuperHeroe });
+    // console.log("resultado: " + JSON.stringify(oResult));
+
+    if(oResult.modifiedCount > 0){
+        return oSuperHeroe;
+    }else{
+        return oResult;
+    }
+
 }
 
 async function _borrarSuperheroe(req) {
-    return req;
+    
 }
 
 module.exports = cds.service.impl(function () {
