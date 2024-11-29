@@ -1,8 +1,65 @@
-<mvc:View controllerName="com.guz.cap.superheroes.ui5superheroe.controller.View1"
+<mvc:View xmlns:core="sap.ui.core" controllerName="com.guz.cap.superheroes.ui5superheroe.controller.View1"
+    xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
+    >
     <Page id="page" title="{i18n>title}">
         <content>
+
+            <Table id="idProductsTable" items="{/superheroe}" mode="SingleSelectMaster" itemPress="onListItemPress">
+
+                <headerToolbar>
+                    <OverflowToolbar id="otbSubheader">
+                        <ToolbarSpacer/>
+                        <SearchField ariaLabelledBy="text1" id="maxPrice" liveChange="onFilter">
+                            <layoutData>
+                                <OverflowToolbarLayoutData maxWidth="200px" shrinkable="true" priority="NeverOverflow"/>
+                            </layoutData>
+                        </SearchField>
+                        <Button text="{i18n>Reset}" type="Transparent" press="onReset"/>
+                        <OverflowToolbarButton tooltip="{i18n>Sort}" type="Transparent" text="{i18n>Sort}" icon="sap-icon://sort" press="onSort"/>
+                        <OverflowToolbarButton tooltip="{i18n>Group}" type="Transparent" text="{i18n>Group}" icon="sap-icon://group-2" press="onGroup"/>
+                        <OverflowToolbarMenuButton tooltip="{i18n>Export}" type="Transparent" text="{i18n>Export}" buttonMode="Split" icon="sap-icon://share" defaultAction="onDefaultActionAccept" beforeMenuOpen="onBeforeMenuOpen" useDefaultActionOnly="true">
+                            <menu>
+                                <Menu itemSelected="onMenuAction">
+                                    <MenuItem text="{i18n>ExportToPDF}" icon="sap-icon://pdf-attachment" />
+                                    <MenuItem text="{i18n>ExportToExcel}" icon="sap-icon://excel-attachment" />
+                                </Menu>
+                            </menu>
+                        </OverflowToolbarMenuButton>
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns >
+                    <Column hAlign="Center">
+                        <Text text="{i18n>SuperHeroeName}" />
+                    </Column>
+                    <Column hAlign="Center">
+                        <Text text="{i18n>Name}" />
+                    </Column>
+                    <Column hAlign="Center">
+                        <Text text="{i18n>age}" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem type="Navigation">
+                        <cells >
+                            <VBox >
+                                <ObjectIdentifier title="" text="{nombreSuperheroe}" />
+                                <core:Icon src="sap-icon://person-placeholder" class="size1Icon"/>
+                                <ObjectAttribute text="{i18n>franchise} : {franquicia}, {i18n>force} : {fuerza}, {destreza}, {intelecto}"/>
+                            </VBox>
+                            <Text text="{nombre}" />
+                            <Text text="{edad}" />
+        
+                        </cells>
+                    </ColumnListItem>
+                </items>
+
+            </Table>
+
+
+
         </content>
     </Page>
 </mvc:View>
